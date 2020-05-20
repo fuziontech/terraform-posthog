@@ -1,5 +1,6 @@
 variable "project_name" {
   description = "The name of the project."
+  default     = "posthog"
 }
 
 variable "aws_access_key" {
@@ -20,7 +21,7 @@ variable "public_key" {
 
 variable "aws_region" {
   description = "The AWS region to create resources in."
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "remote_state_bucket" {
@@ -47,61 +48,61 @@ variable "ecs_remote_state_key" {
 
 variable "ecs_cluster_name" {
   description = "The name of the Amazon ECS cluster."
-  default     = "default"
+  default     = "posthog"
 }
 
 /* ECS optimized AMIs per region */
 variable "amis" {
   default = {
-    ap-northeast-1 = "ami-b3afa2dd"
-    ap-southeast-1 = "ami-0cb0786f"
-    ap-southeast-2 = "ami-cf6342ac"
-    eu-west-1      = "ami-77ab1504"
-    us-east-1      = "ami-33b48a59"
-    us-west-1      = "ami-26f78746"
-    us-west-2      = "ami-65866a05"
+    us-east-1 = "ami-0aee8ced190c05726"
+    us-east-2 = "ami-0d9ef3d936a8fa1c6"
+    us-west-1 = "ami-0fc0ce1549e302a52"
+    us-west-2 = "ami-088bb4cd2f62fc0e1"
+    eu-west-1 = "ami-0a74b180a0c97ecd1"
+    eu-west-2 = "ami-04967dd60612d3b49"
+    eu-west-3 = "ami-032a9f3e531acca53"
   }
 }
 
 variable "availability_zones" {
-  default     = "us-east-2a,us-east-2c,us-east-2d"
+  default     = "us-east-1a,us-east-1c,us-east-1d"
   description = "The availability zones in this environment (must be a comma-deliminated list of availability zones with no spaces)"
 }
 
 variable "instance_type" {
-  default = "t2.micro"
+  default = "t3.micro"
 }
 
 variable "key_name" {
   description = "The aws ssh key name."
-  default     = ""
+  default     = "posthog"
 }
 
 variable "host_port" {
   description = "The instance port"
-  default     = "5000"
+  default     = "8000"
 }
 
 variable "container_port" {
   description = "The container port"
-  default     = "5000"
+  default     = "8000"
 }
 
 variable "bastion_aws_region" {
   description = "The bastion region"
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "vpc_availability_zone" {
   description = "The vpc availability zone"
-  default     = "us-west-2a,"
+  default     = "us-east-1a,"
 }
 
-# Ubuntu 14.04
+# Ubuntu 20.04
 variable "bastion_aws_amis" {
   description = "The bastion amis"
   default = {
-    us-west-2 = "ami-5189a661"
+    us-east-1 = "	ami-00579fbb15b954340"
   }
 }
 
@@ -122,6 +123,7 @@ variable "aws_autoscaling_group_desired_capacity" {
 
 variable "docker_image" {
   description = "The Docker image to use."
+  default     = "posthog/posthog:latest"
 }
 
 // RDS
@@ -129,7 +131,7 @@ variable "docker_image" {
 
 variable rds_allocated_storage {
   description = "Amount of storage to be initially allocated for the DB instance, in gigabytes."
-  default     = 5
+  default     = 80
 }
 
 variable rds_engine {
@@ -139,24 +141,27 @@ variable rds_engine {
 
 variable rds_engine_version {
   description = "Version number of the database engine to use."
-  default     = "9.4.5"
+  default     = "12.2"
 }
 
 variable rds_instance_class {
   description = "The compute and memory capacity of the instance"
-  default     = "db.t1.micro"
+  default     = "db.t3.micro"
 }
 
 variable database_name {
   description = "The name of the database."
+  default     = "posthog"
 }
 
 variable database_user {
   description = "The name of the master database user."
+  default     = "posthog"
 }
 
 variable database_password {
   description = "Password for the master DB instance user"
+  default     = "posthog"
 }
 
 variable rds_storage_type {
@@ -169,11 +174,12 @@ variable rds_storage_type {
 
 variable elasticache_cache_name {
   description = "Specifies the name of the cache instance."
+  default     = "posthog"
 }
 
 variable elasticache_engine_version {
   description = "Specifies the engine version for the cache instance."
-  default     = "2.8.24"
+  default     = "5.0.6"
 }
 
 variable elasticache_maintenance_window {
@@ -183,5 +189,110 @@ variable elasticache_maintenance_window {
 
 variable elasticache_instance_type {
   description = "Specifies the instance type for the cache instance."
-  default     = "cache.t2.micro"
+  default     = "cache.t3.micro"
+}
+
+# Django
+variable "secure_ssl_redirect" {
+  description = ""
+  default     = false
+}
+
+variable "secret_key" {
+  description = ""
+  default     = "please dont use this default"
+}
+
+variable "settings_module" {
+  description = ""
+}
+
+variable "database_url" {
+  description = ""
+}
+
+variable "sentry_dsn" {
+  description = ""
+}
+
+variable "ssl_certificate_id" {
+  description = ""
+}
+
+variable "keypair_name" {
+  description = ""
+}
+
+
+variable "uwsgi_processes" {
+  description = ""
+}
+
+variable "uwsgi_harakiki" {
+  description = ""
+}
+
+variable "broker_url" {
+  description = ""
+}
+
+variable "internal_zone_id" {
+  description = ""
+}
+
+variable "admin_url" {
+  description = "admin"
+}
+
+variable "allowed_hosts" {
+  description = ""
+}
+
+variable "varnish_host_port" {
+  description = ""
+  default     = "8888"
+}
+
+variable "varnish_container_port" {
+  description = ""
+  default     = "80"
+}
+
+variable "varnish_health_check_url" {
+  description = ""
+  default     = "/200/"
+}
+
+variable "redis_host" {
+  description = ""
+  default     = "redis.internal"
+}
+
+variable "smtp_host" {
+  description = ""
+}
+
+variable "smtp_port" {
+  description = ""
+}
+
+variable "smtp_host_user" {
+  description = ""
+}
+
+variable "smtp_host_password" {
+  description = ""
+}
+
+variable "smtp_use_tls" {
+  description = ""
+}
+
+variable "smtp_use_ssl" {
+  description = ""
+}
+
+variable "default_from_email" {
+  default     = "tim@posthog.com"
+  description = ""
 }
